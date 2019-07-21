@@ -4,9 +4,14 @@ import "./VideoPlayer.css";
 class VideoPlayer extends Component {
   constructor(props) {
     super(props);
+    this.videoPlayer = React.createRef();
     this.videoRef = React.createRef();
+    this.progressBar = React.createRef();
+    this.progress = React.createRef();
   }
   state = {
+    currentTimeInSeconds: 0,
+    duration: 0,
     currentDuration: { hours: "00", minutes: "00", seconds: "00" },
     completeDuration: { hours: "00", minutes: "00", seconds: "00" },
     isPlaying: false,
@@ -14,27 +19,28 @@ class VideoPlayer extends Component {
   };
 
   componentDidMount() {
-    console.log(this.videoRef);
+    // console.log(this.videoRef);
   }
 
   updateCompleteDuration = () => {
-    let duration = this.videoRef.current.duration;
+    let tempDur = this.videoRef.current.duration;
     this.setState({
-      completeDuration: calculateDuration(duration)
+      duration: tempDur,
+      completeDuration: calculateDuration(tempDur)
     });
   };
 
   updateCurrentDuration = () => {
-    let currentTime = this.videoRef.current.currentTime;
-    let duration = this.videoRef.current.duration;
+    let tempCurrentTime = this.videoRef.current.currentTime;
+    let tempDur = this.state.duration;
     this.setState({
-      currentDuration: calculateDuration(currentTime),
+      currentTimeInSeconds: tempCurrentTime,
+      currentDuration: calculateDuration(tempCurrentTime),
       progressPercentage: getPercentage(
-        currentTime.toFixed(2),
-        duration.toFixed(2)
+        tempCurrentTime.toFixed(2),
+        tempDur.toFixed(2)
       )
     });
-    console.log(this.state.progressPercentage);
   };
 
   updateEnded = () => {
@@ -49,6 +55,14 @@ class VideoPlayer extends Component {
     this.videoRef.current.pause();
     this.setState({ isPlaying: false });
   };
+  handleProgress = e => {
+    let progressPosition =
+      e.pageX - this.videoPlayer.current.offsetLeft; /*calculates the position*/
+    let progressValue =
+      (progressPosition / this.videoPlayer.current.clientWidth) *
+      100; /*gives the percentage*/
+    console.log(this.state.duration);
+  };
 
   render() {
     let progressStyle = {
@@ -56,20 +70,25 @@ class VideoPlayer extends Component {
     };
     return (
       <div>
-        <div className="videoPlayer">
+        <div className="videoPlayer" ref={this.videoPlayer}>
           <video
             src={this.props.src}
             ref={this.videoRef}
             onTimeUpdate={this.updateCurrentDuration}
             onLoadedData={this.updateCompleteDuration}
             onEnded={this.updateEnded}
-            onProgress={() => {
-              console.log("progress");
-            }}
           />
           <div className="video-info">
-            <div className="progress-bar">
-              <span className="progress" style={progressStyle} />
+            <div
+              className="progress-bar"
+              ref={this.progressBar}
+              onClick={e => this.handleProgress(e)}
+            >
+              <span
+                className="progress"
+                style={progressStyle}
+                ref={this.progress}
+              />
             </div>
             <div className="video-controls">
               <div className="start-time time">

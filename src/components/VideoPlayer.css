@@ -3,9 +3,11 @@
   padding-bottom: 0px;
   position: relative;
   display: inline-flex;
+  position: relative;
 }
 .videoPlayer video {
   max-width: 480px;
+  margin: auto;
 }
 
 .video-info {
@@ -23,11 +25,14 @@
 }
 
 .video-info .progress-bar {
-  height: 2px;
+  height: 4px;
   background-color: #efefef;
   width: 100%;
   position: relative;
   overflow: hidden;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 .video-info .progress-bar .progress {
   position: absolute;
