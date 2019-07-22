@@ -1,38 +1,43 @@
+:root {
+  --player-color: rgba(26, 29, 26, 0.25);
+  --progress-color: #9cec5b;
+  --progressbar-color: rgba(223, 224, 226, 0.55);
+  --text-color: #a2aebb;
+  --video-player-width: 800px;
+}
 .videoPlayer {
-  border: 1px solid;
   padding-bottom: 0px;
   position: relative;
   display: inline-flex;
   position: relative;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 }
 .videoPlayer video {
-  max-width: 480px;
+  max-width: var(--video-player-width);
   margin: auto;
 }
 
 .video-info {
   position: absolute;
-  /* height: 30px; */
   bottom: 0;
   left: 0;
   right: 0;
   margin: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(26, 29, 26, 0.5);
   display: flex;
   flex-direction: column;
-  padding: 10px;
   z-index: 10;
 }
 
 .video-info .progress-bar {
   height: 4px;
-  background-color: #efefef;
+  background-color: var(--progressbar-color);
   width: 100%;
   position: relative;
   overflow: hidden;
   margin-bottom: 10px;
   cursor: pointer;
-  border-radius: 4px;
+  /* border-radius: 4px; */
 }
 .video-info .progress-bar .progress {
   position: absolute;
@@ -42,7 +47,7 @@
   left: 0;
   width: 0;
   margin: auto;
-  background-color: #ff0000;
+  background-color: var(--progress-color);
 }
 
 .video-controls {
@@ -50,6 +55,8 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  padding: 0 10px;
+  box-sizing: border-box;
 }
 .control-btn {
   height: 40px;
@@ -59,13 +66,43 @@
   align-items: center;
   border: none;
   background-color: transparent;
-  color: #efefef;
+  color: var(--text-color);
   outline: 0;
 }
+.time-control {
+  display: flex;
+  color: var(--text-color);
+  font-size: 12px;
+}
 .time {
-  color: #efefef;
-  width: 70px;
+  color: var(--text-color);
+  width: 64px;
   justify-content: center;
   display: flex;
   align-items: center;
+}
+.volume-controls {
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+}
+
+.volume-progressbar {
+  display: inline-flex;
+  width: 100px;
+  height: 4px;
+  background-color: var(--progressbar-color);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.volume-progressbar .volume-progress {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  height: 100%;
+  width: 50%;
+  background-color: var(--progress-color);
 }

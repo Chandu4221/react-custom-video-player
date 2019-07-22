@@ -8,6 +8,7 @@ class VideoPlayer extends Component {
     this.videoRef = React.createRef(); // reference for the video element
     this.progressBar = React.createRef(); // reference for the progressbar
     this.progress = React.createRef(); // reference for the progress inside the progressbar
+    this.volumeProgress = React.createRef();
   }
   /*
   state contains
@@ -24,8 +25,16 @@ class VideoPlayer extends Component {
     currentDuration: { hours: "00", minutes: "00", seconds: "00" },
     completeDuration: { hours: "00", minutes: "00", seconds: "00" },
     isPlaying: false,
-    progressPercentage: 0
+    progressPercentage: 0,
+    isVolumeOn: true,
+    volumePercentage: 100,
+    volumeValue: 1
   };
+
+  componentDidMount() {
+    console.log(this.videoRef);
+    console.log(this.volumeProgress);
+  }
 
   /**
    *onLoadedData - we need to update the completeDurationInSeconds and completeDuration
@@ -92,16 +101,39 @@ class VideoPlayer extends Component {
    *  ==> currentTime = (click position * video complete duration in seconds) / progressbar width
    */
   handleProgress = e => {
-    let progressPosition = e.pageX - this.videoPlayer.current.offsetLeft;
-    let progressValue =
-      (progressPosition / this.videoPlayer.current.clientWidth) * 100;
-
+    let tempProgressPosition = e.pageX - this.videoPlayer.current.offsetLeft;
+    let tempProgressValue =
+      (tempProgressPosition / this.videoPlayer.current.clientWidth) * 100;
     this.setState({
-      progressPercentage: progressValue
+      progressPercentage: tempProgressValue
     });
     this.videoRef.current.currentTime =
-      (progressPosition * this.state.completeDurationInSeconds) /
+      (tempProgressPosition * this.state.completeDurationInSeconds) /
       this.progressBar.current.clientWidth;
+  };
+
+  toggleVolume = () => {
+    this.setState({ isVolumeOn: !this.state.isVolumeOn });
+    this.videoRef.current.volume = this.videoRef.current.volume
+      ? 0
+      : this.state.volumeValue;
+  };
+
+  updateVolume = e => {
+    let tempVolumePosition =
+      e.pageX -
+      this.videoPlayer.current.offsetLeft -
+      this.volumeProgress.current.offsetLeft;
+    let tempVolumeProgress =
+      (tempVolumePosition / this.volumeProgress.current.clientWidth) * 100;
+    let tempVolumeValue =
+      tempVolumePosition / this.volumeProgress.current.clientWidth;
+    this.videoRef.current.volume = tempVolumeValue;
+
+    this.setState({
+      volumePercentage: tempVolumeProgress,
+      volumeValue: tempVolumeValue
+    });
   };
 
   render() {
@@ -110,6 +142,9 @@ class VideoPlayer extends Component {
      */
     let progressStyle = {
       width: this.state.progressPercentage + "%"
+    };
+    let volumeProgressStyle = {
+      width: this.state.volumePercentage + "%"
     };
     return (
       <div>
@@ -134,11 +169,26 @@ class VideoPlayer extends Component {
               />
             </div>
             <div className="video-controls">
-              <div className="start-time time">
-                {this.state.currentDuration.hours}:
-                {this.state.currentDuration.minutes}:
-                {this.state.currentDuration.seconds}
+              <div className="volume-controls">
+                <button className="control-btn" onClick={this.toggleVolume}>
+                  {this.state.isVolumeOn ? (
+                    <i className="material-icons">volume_up</i>
+                  ) : (
+                    <i className="material-icons">volume_off</i>
+                  )}
+                </button>
+                <div
+                  className="volume-progressbar"
+                  ref={this.volumeProgress}
+                  onClick={e => this.updateVolume(e)}
+                >
+                  <span
+                    className="volume-progress"
+                    style={volumeProgressStyle}
+                  />
+                </div>
               </div>
+
               <div className="controls">
                 {this.state.isPlaying ? (
                   <button className="control-btn" onClick={this.handlePause}>
@@ -150,10 +200,19 @@ class VideoPlayer extends Component {
                   </button>
                 )}
               </div>
-              <div className="end-time time">
-                {this.state.completeDuration.hours}:
-                {this.state.completeDuration.minutes}:
-                {this.state.completeDuration.seconds}
+
+              <div className="time-control">
+                <div className="start-time time">
+                  {this.state.currentDuration.hours}:
+                  {this.state.currentDuration.minutes}:
+                  {this.state.currentDuration.seconds}
+                </div>
+                /
+                <div className="end-time time">
+                  {this.state.completeDuration.hours}:
+                  {this.state.completeDuration.minutes}:
+                  {this.state.completeDuration.seconds}
+                </div>
               </div>
             </div>
           </div>

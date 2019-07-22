@@ -1,6 +1,6 @@
-@import url("https://fonts.googleapis.com/css?family=Concert+One&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap");
 .videoPlayer {
-  font-family: "Concert One", cursive;
+  font-family: "Roboto Mono", monospace;
 }
 html {
   height: 100%;
