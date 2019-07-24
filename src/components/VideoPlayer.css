@@ -10,8 +10,8 @@
   padding-bottom: 0px;
   position: relative;
   display: inline-flex;
-  position: relative;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
 }
 .videoPlayer video {
   max-width: var(--video-player-width);
@@ -28,6 +28,17 @@
   display: flex;
   flex-direction: column;
   z-index: 10;
+  transform: translateY(0);
+  transition: all ease 0.25s;
+}
+
+.videoPlayer.show-controls .video-info {
+  transform: translateY(0);
+  transition: all ease 0.25s;
+}
+
+.videoPlayer.hide-controls .video-info {
+  transform: translateY(90%);
 }
 
 .video-info .progress-bar {

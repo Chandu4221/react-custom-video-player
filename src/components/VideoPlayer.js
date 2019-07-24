@@ -28,7 +28,8 @@ class VideoPlayer extends Component {
     progressPercentage: 0,
     isVolumeOn: true,
     volumeValue: 1,
-    volumePercentage: 100
+    volumePercentage: 100,
+    isShowingControls: true
   };
 
   componentDidMount() {
@@ -67,7 +68,7 @@ class VideoPlayer extends Component {
    *onEnded - once the video is ended set the isPlaying state to false
    */
   updateEnded = () => {
-    this.setState({ isPlaying: false });
+    this.setState({ isPlaying: false, isShowingControls: true });
     this.videoRef.current.currentTime = 0;
   };
 
@@ -102,7 +103,6 @@ class VideoPlayer extends Component {
    */
   handleProgress = e => {
     let tempProgressPosition = e.pageX - this.videoPlayer.current.offsetLeft;
-
     let tempProgressPercentage =
       (tempProgressPosition / this.videoPlayer.current.clientWidth) * 100;
     this.setState({
@@ -142,6 +142,15 @@ class VideoPlayer extends Component {
     });
   };
 
+  updateShowControls = () => {
+    this.setState({ isShowingControls: true });
+  };
+  updateHideControls = () => {
+    if (!this.videoRef.current.paused && !this.videoRef.current.ended) {
+      this.setState({ isShowingControls: false });
+    }
+  };
+
   render() {
     /**
      * setting the width of the progress inside progressbar
@@ -154,7 +163,14 @@ class VideoPlayer extends Component {
     };
     return (
       <div>
-        <div className="videoPlayer" ref={this.videoPlayer}>
+        <div
+          className={`videoPlayer ${
+            this.state.isShowingControls ? "show-controls" : "hide-controls"
+          }`}
+          ref={this.videoPlayer}
+          onMouseEnter={this.updateShowControls}
+          onMouseLeave={this.updateHideControls}
+        >
           <video
             src={this.props.src}
             ref={this.videoRef}
