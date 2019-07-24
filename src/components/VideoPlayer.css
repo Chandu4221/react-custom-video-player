@@ -4,6 +4,7 @@
   --progressbar-color: rgba(223, 224, 226, 0.55);
   --text-color: #a2aebb;
   --video-player-width: 800px;
+  --easing: 0.25s;
 }
 .videoPlayer {
   padding-bottom: 0px;
@@ -37,7 +38,6 @@
   overflow: hidden;
   margin-bottom: 10px;
   cursor: pointer;
-  /* border-radius: 4px; */
 }
 .video-info .progress-bar .progress {
   position: absolute;
@@ -48,6 +48,7 @@
   width: 0;
   margin: auto;
   background-color: var(--progress-color);
+  transition: all ease var(--easing);
 }
 
 .video-controls {
@@ -105,4 +106,5 @@
   height: 100%;
   width: 50%;
   background-color: var(--progress-color);
+  transition: all ease var(--easing);
 }

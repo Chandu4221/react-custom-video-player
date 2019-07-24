@@ -27,13 +27,12 @@ class VideoPlayer extends Component {
     isPlaying: false,
     progressPercentage: 0,
     isVolumeOn: true,
-    volumePercentage: 100,
-    volumeValue: 1
+    volumeValue: 1,
+    volumePercentage: 100
   };
 
   componentDidMount() {
     console.log(this.videoRef);
-    console.log(this.volumeProgress);
   }
 
   /**
@@ -69,6 +68,7 @@ class VideoPlayer extends Component {
    */
   updateEnded = () => {
     this.setState({ isPlaying: false });
+    this.videoRef.current.currentTime = 0;
   };
 
   /*
@@ -102,10 +102,11 @@ class VideoPlayer extends Component {
    */
   handleProgress = e => {
     let tempProgressPosition = e.pageX - this.videoPlayer.current.offsetLeft;
-    let tempProgressValue =
+
+    let tempProgressPercentage =
       (tempProgressPosition / this.videoPlayer.current.clientWidth) * 100;
     this.setState({
-      progressPercentage: tempProgressValue
+      progressPercentage: tempProgressPercentage
     });
     this.videoRef.current.currentTime =
       (tempProgressPosition * this.state.completeDurationInSeconds) /
@@ -119,20 +120,25 @@ class VideoPlayer extends Component {
       : this.state.volumeValue;
   };
 
-  updateVolume = e => {
+  updateVolume = () => {
+    this.setState({
+      volumePercentage: this.videoRef.current.volume * 100
+    });
+  };
+
+  setVolume = e => {
     let tempVolumePosition =
       e.pageX -
       this.videoPlayer.current.offsetLeft -
       this.volumeProgress.current.offsetLeft;
-    let tempVolumeProgress =
-      (tempVolumePosition / this.volumeProgress.current.clientWidth) * 100;
     let tempVolumeValue =
       tempVolumePosition / this.volumeProgress.current.clientWidth;
+
     this.videoRef.current.volume = tempVolumeValue;
 
     this.setState({
-      volumePercentage: tempVolumeProgress,
-      volumeValue: tempVolumeValue
+      volumeValue: tempVolumeValue,
+      isVolumeOn: true
     });
   };
 
@@ -155,6 +161,7 @@ class VideoPlayer extends Component {
             onTimeUpdate={this.updateCurrentDuration}
             onLoadedData={this.updateCompleteDuration}
             onEnded={this.updateEnded}
+            onVolumeChange={this.updateVolume}
           />
           <div className="video-info">
             <div
@@ -180,7 +187,7 @@ class VideoPlayer extends Component {
                 <div
                   className="volume-progressbar"
                   ref={this.volumeProgress}
-                  onClick={e => this.updateVolume(e)}
+                  onClick={e => this.setVolume(e)}
                 >
                   <span
                     className="volume-progress"
